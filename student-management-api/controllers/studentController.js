@@ -1,20 +1,26 @@
+const Students = require('../models/students');
 const db = require('../utils/db-collection');
 
 // INSERT student
-const addStudent = (req, res) => {
-    const { name, email, age } = req.body;
+const addStudent = async (req, res) => {
 
-    const query = "INSERT INTO students (name, email, age) VALUES (?, ?, ?)";
 
-    db.execute(query, [name, email, age], (err) => {
-        if (err) {
-            console.log("INSERT Error:", err);
-            return res.status(500).send(err.message);
-        }
+    //adding an entry with sequelize
+    try {
+        const { name, email, age } = req.body;
+        const student = await Students.create({
+            email:email,
+            name:name
+        })
 
-        console.log(`INSERT: Added student -> ${name}`);
-        res.status(201).send(`Student ${name} added successfully`);
-    });
+        res.status(201).send(`user with ${name} is created`)
+
+    } catch (error) {
+        res.status(500).send("unable to make an entry")
+        
+    }
+
+    
 };
 
 // GET all students
