@@ -1,34 +1,38 @@
-const db = require('../utils/db-collection')
+const User = require('../models/User');
 
-const addUser = (req,res)=>{
-    const { name, email } = req.body;
+const addUser = async (req, res) => {
+    try {
+        const { name, email } = req.body;
 
-    const query = `INSERT INTO users (name, email) VALUES (?, ?)`;
+        const user = await User.create({ name, email });
 
-    db.execute(query, [name, email], (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: "Error adding user", error: err });
-        }
+        return res.status(201).json({
+            message: "User added successfully",
+            userId: user.id
+        });
 
-        return res.status(201).json({ message: "User added successfully", userId: result.insertId });
-    });
-    
-}
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error adding user",
+            error
+        });
+    }
+};
 
-const getAllUsers = (req, res) =>{
-    const query = `SELECT * FROM users`;
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.findAll();
+        return res.status(200).json(users);
 
-    db.execute(query, (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: "Error fetching users", error: err });
-        }
-
-        return res.status(200).json(results);
-    });
-
-}
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error fetching users",
+            error
+        });
+    }
+};
 
 module.exports = {
     addUser,
     getAllUsers
-}
+};

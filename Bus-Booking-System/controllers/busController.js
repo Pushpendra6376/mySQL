@@ -1,59 +1,59 @@
-const db = require('../utils/db-collection')
+const Bus = require('../models/Bus');
+const { Op } = require('sequelize');
+const addBus = async (req, res) => {
+    try {
+        const { busNumber, totalSeats, availableSeats } = req.body;
 
-const addbus = (req,res)=>{
-    const { busNumber, totalSeats, availableSeats } = req.body;
-
-    const query = `
-        INSERT INTO buses (busNumber, totalSeats, availableSeats)
-        VALUES (?, ?, ?)
-    `;
-
-    db.execute(query, [busNumber, totalSeats, availableSeats], (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: "Error adding bus", error: err });
-        }
+        const bus = await Bus.create({ busNumber, totalSeats, availableSeats });
 
         return res.status(201).json({
             message: "Bus added successfully",
-            busId: result.insertId
+            busId: bus.id
         });
-    });
-    
-}
 
-const getAllBuses = (req, res) =>{
-    const query = `SELECT * FROM buses`;
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error adding bus",
+            error
+        });
+    }
+};
 
-    db.execute(query, (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: "Error fetching buses", error: err });
-        }
+const getAllBuses = async (req, res) => {
+    try {
+        const buses = await Bus.findAll();
+        return res.status(200).json(buses);
 
-        return res.status(200).json(results);
-    });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error fetching buses",
+            error
+        });
+    }
+};
 
-}
+const getAvailableSeats = async (req, res) => {
+    try {
+        const seats = req.params.seats;
 
-const getAvailableSeats =(req,res)=>{
-    const seats = req.params.seats;
+        const buses = await Bus.findAll({
+            where: {
+                availableSeats: { [Op.gt]: seats }
+            }
+        });
 
-    const query = `
-        SELECT * FROM buses
-        WHERE availableSeats > ?
-    `;
+        return res.status(200).json(buses);
 
-    db.execute(query, [seats], (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: "Error fetching buses", error: err });
-        }
-
-        return res.status(200).json(results);
-    });
-
-}
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error fetching available buses",
+            error
+        });
+    }
+};
 
 module.exports = {
-    addbus,
+    addBus,
     getAllBuses,
     getAvailableSeats
-}
+};
