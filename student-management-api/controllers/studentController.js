@@ -23,6 +23,35 @@ const addStudent = async (req, res) => {
     
 };
 
+// UPDATE student
+const updateStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, age } = req.body;
+
+        // Finding the  student which have to update
+        const student = await Students.findByPk(id);
+        if (!student) {
+            return res.status(404).send("Student not found");
+        }
+
+        // this is for Update fields
+        student.name = name || student.name;
+        student.email = email || student.email;
+        student.age = age || student.age;
+
+        // Saving the updated info of student
+        await student.save();
+
+        res.status(200).send("Student entries updated successfully");
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Student could not be updated");
+    }
+};
+
+
 // GET all students
 const getAllStudents = (req, res) => {
     const query = "SELECT * FROM students";
@@ -56,27 +85,7 @@ const getStudentById = (req, res) => {
     });
 };
 
-// UPDATE student
-const updateStudent = (req, res) => {
-    const { id } = req.params;
-    const { name, email, age } = req.body;
 
-    const query = "UPDATE students SET name=?, email=?, age=? WHERE id=?";
-
-    db.execute(query, [name, email, age, id], (err, result) => {
-        if (err) {
-            console.log("UPDATE Error:", err);
-            return res.status(500).send(err.message);
-        }
-
-        if (result.affectedRows === 0) {
-            return res.status(404).send("Student not found");
-        }
-
-        console.log(`UPDATE: Student ${id} updated`);
-        res.status(200).send("Student updated successfully");
-    });
-};
 
 // DELETE student
 const deleteStudent = (req, res) => {
