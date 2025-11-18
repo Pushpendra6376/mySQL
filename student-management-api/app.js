@@ -3,7 +3,8 @@ const express = require('express');
 const db = require('./utils/db-collection')
 const StudentsRoutes = require('./routes/studentRoute')
 
-const studentModel = require('./models/students')
+//models
+require('./models');
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,6 @@ db.sync().then(()=>{
 });
 
 }).catch((error)=>{
-    console.log(err);
+    console.log(error);
 })
 

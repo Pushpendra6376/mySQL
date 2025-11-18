@@ -8,5 +8,6 @@ router.get('/', StudentController.getAllStudents);
 router.get('/:id', StudentController.getStudentById);
 router.put('/:id', StudentController.updateStudent);
 router.delete('/:id', StudentController.deleteStudent);
+router.post('/addingStudentWithCard', StudentController.addingValuesToStudentAndIdentityTable);
 
 module.exports = router;
