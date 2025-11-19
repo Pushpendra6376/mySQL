@@ -1,5 +1,7 @@
-const User = require('../models/User');
+// IMPORT from the central models file
+const { User, Booking, Bus } = require('../models');
 
+// creating user
 const addUser = async (req, res) => {
     try {
         const { name, email } = req.body;
@@ -14,25 +16,31 @@ const addUser = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             message: "Error adding user",
-            error
+            error: error.message
         });
     }
 };
 
-const getAllUsers = async (req, res) => {
+const getUserBookings = async (req, res) => {
     try {
-        const users = await User.findAll();
-        return res.status(200).json(users);
+        const userId = req.params.id;
+
+        const bookings = await Booking.findAll({
+            where: { userId },
+            include: {
+                model: Bus,
+                attributes: ['busNumber']
+            }
+        });
+
+        res.status(200).json(bookings);
 
     } catch (error) {
-        return res.status(500).json({
-            message: "Error fetching users",
-            error
-        });
+        res.status(500).json({ error: error.message });
     }
 };
 
 module.exports = {
     addUser,
-    getAllUsers
+    getUserBookings
 };

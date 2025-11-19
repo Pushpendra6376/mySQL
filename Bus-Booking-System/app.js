@@ -6,6 +6,7 @@ const app = express();
 // Import Routes
 const userRoutes = require('./routes/userRoute');
 const busesRoutes = require('./routes/busesRoute');
+const bookingRoutes = require('./routes/bookingRoute');
 
 // Import Sequelize Connection
 const sequelize = require('./models/index');

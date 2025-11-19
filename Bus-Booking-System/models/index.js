@@ -23,4 +23,17 @@ async function connectDB() {
 
 connectDB();
 
-module.exports = sequelize;
+const User = require('./User')(sequelize, DataTypes);
+const Bus = require('./Bus')(sequelize, DataTypes);
+const Booking = require('./Booking')(sequelize, DataTypes);
+const Payment = require('./Payment')(sequelize, DataTypes);
+
+// One User -> Many Bookings
+User.hasMany(Booking, { foreignKey: 'userId' });
+Booking.belongsTo(User, { foreignKey: 'userId' });
+
+// One Bus -> Many Bookings
+Bus.hasMany(Booking, { foreignKey: 'busId' });
+Booking.belongsTo(Bus, { foreignKey: 'busId' });
+
+module.exports = { sequelize, User, Bus, Booking, Payment };

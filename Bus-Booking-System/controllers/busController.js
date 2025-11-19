@@ -1,5 +1,7 @@
-const Bus = require('../models/Bus');
-const { Op } = require('sequelize');
+// IMPORT from the central models file, not individual files
+const { Bus, Booking, User } = require('../models');
+
+// creating buses
 const addBus = async (req, res) => {
     try {
         const { busNumber, totalSeats, availableSeats } = req.body;
@@ -14,46 +16,31 @@ const addBus = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             message: "Error adding bus",
-            error
+            error: error.message // Good practice to send error.message
         });
     }
 };
 
-const getAllBuses = async (req, res) => {
+const getBusBookings = async (req, res) => {
     try {
-        const buses = await Bus.findAll();
-        return res.status(200).json(buses);
+        const busId = req.params.id;
 
-    } catch (error) {
-        return res.status(500).json({
-            message: "Error fetching buses",
-            error
-        });
-    }
-};
-
-const getAvailableSeats = async (req, res) => {
-    try {
-        const seats = req.params.seats;
-
-        const buses = await Bus.findAll({
-            where: {
-                availableSeats: { [Op.gt]: seats }
+        const bookings = await Booking.findAll({
+            where: { busId },
+            include: {
+                model: User,
+                attributes: ['name', 'email']
             }
         });
 
-        return res.status(200).json(buses);
+        res.status(200).json(bookings);
 
     } catch (error) {
-        return res.status(500).json({
-            message: "Error fetching available buses",
-            error
-        });
+        res.status(500).json({ error: error.message });
     }
 };
 
 module.exports = {
     addBus,
-    getAllBuses,
-    getAvailableSeats
+    getBusBookings
 };
