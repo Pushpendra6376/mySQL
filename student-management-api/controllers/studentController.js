@@ -70,36 +70,30 @@ const updateStudent = async (req, res) => {
 
 
 // GET all students
-const getAllStudents = (req, res) => {
-    const query = "SELECT * FROM students";
-
-    db.execute(query, (err, results) => {
-        if (err) {
-            console.log("FETCH Error:", err);
-            return res.status(500).send(err.message);
-        }
-
-        res.status(200).json(results);
-    });
+const getAllStudents = async (req, res) => {
+    try {
+        const students = await Students.findAll();
+        res.status(200).json(students);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 // GET student by ID
-const getStudentById = (req, res) => {
-    const { id } = req.params;
-    const query = "SELECT * FROM students WHERE id = ?";
+const getStudentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const student = await Students.findByPk(id);
 
-    db.execute(query, [id], (err, results) => {
-        if (err) {
-            console.log("FETCH BY ID Error:", err);
-            return res.status(500).send(err.message);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
         }
 
-        if (results.length === 0) {
-            return res.status(404).send("Student not found");
-        }
+        res.status(200).json(student);
 
-        res.status(200).json(results[0]);
-    });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 
