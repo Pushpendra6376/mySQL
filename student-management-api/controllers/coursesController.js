@@ -14,23 +14,31 @@ const addCourse = async (req,res) =>{
     }
 }
 
-const addStudentToCourses = async (req, res) =>{
+const addStudentToCourses = async (req, res) => {
     try {
-        const {studentId} = req.body;
+        const { studentId, courseId } = req.body;  
         const student = await Students.findByPk(studentId);
-        const course = await Courses.findAll({
-            where:{
-                id:courseId
+        if (!student) return res.status(404).json({ error: "Student not found" });
+
+        const courses = await Courses.findAll({
+            where: {
+                courseId: courseId  
             }
-        })
-        await Students.addCourse(course);
-        const updatedStudent = await Students.findByPk(student,{include:course});
+        });
+
+        await student.addCourses(courses);
+
+        const updatedStudent = await Students.findByPk(studentId, {
+            include: Courses
+        });
+
         res.status(201).json(updatedStudent);
-        
+
     } catch (error) {
-        res.status(500).json({'error':error.message});
+        res.status(500).json({ error: error.message });
     }
-}
+};
+
 
 module.exports = {
     addCourse,
