@@ -1,5 +1,9 @@
-// IMPORT from the central models file
-const { User, Booking, Bus } = require('../models');
+//importing models
+const User = require('../models/User');
+const Bus = require('../models/Bus');
+const Booking = require('../models/Booking');
+
+require('../models/index');
 
 // creating user
 const addUser = async (req, res) => {
@@ -21,6 +25,7 @@ const addUser = async (req, res) => {
     }
 };
 
+//get users booking
 const getUserBookings = async (req, res) => {
     try {
         const userId = req.params.id;

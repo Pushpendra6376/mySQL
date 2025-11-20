@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const sequelize = require('../utils/db-collection');
 
 const Bus = sequelize.define("Bus", {
     id: {
@@ -10,9 +10,6 @@ const Bus = sequelize.define("Bus", {
     busNumber: DataTypes.STRING,
     totalSeats: DataTypes.INTEGER,
     availableSeats: DataTypes.INTEGER
-}, {
-    tableName: 'buses',
-    timestamps: false
 });
 
 module.exports = Bus;

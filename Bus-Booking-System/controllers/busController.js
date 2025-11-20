@@ -1,5 +1,9 @@
-// IMPORT from the central models file, not individual files
-const { Bus, Booking, User } = require('../models');
+//importing models
+const User = require('../models/User');
+const Bus = require('../models/Bus');
+const Booking = require('../models/Booking');
+
+require('../models/index');
 
 // creating buses
 const addBus = async (req, res) => {
@@ -16,7 +20,7 @@ const addBus = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             message: "Error adding bus",
-            error: error.message // Good practice to send error.message
+            error: error.message 
         });
     }
 };

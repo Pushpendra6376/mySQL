@@ -1,5 +1,8 @@
-// IMPORT from the central models file
-const { Booking, User, Bus } = require('../models');
+//importing models
+const User = require('../models/User');
+const Bus = require('../models/Bus');
+const Booking = require('../models/Booking');
+require('../models/index');
 
 const createBooking = async (req, res) => {
     try {

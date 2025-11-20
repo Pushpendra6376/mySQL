@@ -9,9 +9,9 @@ const busesRoutes = require('./routes/busesRoute');
 const bookingRoutes = require('./routes/bookingRoute');
 
 // Import Sequelize Connection
-const sequelize = require('./models/index');
+const sequelize = require('./utils/db-collection');
 
-// Load Models So Sequelize Knows Them
+// importing models
 require('./models/User');
 require('./models/Bus');
 require('./models/Booking');
@@ -22,13 +22,14 @@ app.use(express.json());
 // Routes
 app.use('/users', userRoutes);
 app.use('/buses', busesRoutes);
+app.use('/create-booking', bookingRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
 // Sync Sequelize Models
-sequelize.sync()
+sequelize.sync({ alter: true })
     .then(() => {
         console.log("All tables synced successfully!");
     })

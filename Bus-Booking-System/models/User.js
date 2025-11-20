@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const sequelize = require('../utils/db-collection');
 
 const User = sequelize.define("User", {
     id: {
@@ -14,9 +14,6 @@ const User = sequelize.define("User", {
     email: {
         type: DataTypes.STRING,
     }
-}, {
-    tableName: 'users',
-    timestamps: false
 });
 
 module.exports = User;
